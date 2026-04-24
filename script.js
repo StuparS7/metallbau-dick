@@ -1,5 +1,20 @@
-﻿const toggle = document.querySelector('.menu-toggle');
+const toggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.menu');
+const root = document.documentElement;
+
+const mobileViewport = window.matchMedia('(max-width: 820px)');
+const coarsePointer = window.matchMedia('(hover: none), (pointer: coarse)');
+
+const syncDeviceMode = () => {
+  const isMobile = mobileViewport.matches || coarsePointer.matches;
+  root.classList.toggle('is-mobile-device', isMobile);
+  root.classList.toggle('is-desktop-device', !isMobile);
+};
+
+syncDeviceMode();
+
+mobileViewport.addEventListener('change', syncDeviceMode);
+coarsePointer.addEventListener('change', syncDeviceMode);
 
 if (toggle && menu) {
   const closeMenu = () => {
@@ -24,6 +39,14 @@ if (toggle && menu) {
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
+      closeMenu();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    syncDeviceMode();
+
+    if (!mobileViewport.matches && !coarsePointer.matches) {
       closeMenu();
     }
   });
